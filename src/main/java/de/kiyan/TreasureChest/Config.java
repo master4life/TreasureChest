@@ -1,14 +1,17 @@
 package de.kiyan.TreasureChest;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Config {
-    Plugin plugin = null;
+    Plugin plugin;
 
     public Config() {
         this.plugin = Main.getInstance();
@@ -31,18 +34,23 @@ public class Config {
         }
     }
 
-    public void setBlocks( String name, ArrayList< String > block ) {
+    public void setBlocks( String name, HashMap< String, MaterialData > block ) {
         File file = new File( getDir(), name + ".yml" );
 
         if( block == null)
             System.out.println( "NULL ");
+
         System.out.println( file.getAbsoluteFile() );
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
 
+        for( Map.Entry<String, MaterialData > entry : block.entrySet() ) {
+            String key = entry.getKey();
+            MaterialData value = entry.getValue();
 
-        for( String bl : block ) {
-            System.out.println( bl );
+            System.out.println( key );
+            System.out.println( value );
         }
+
         try {
             yaml.save( file );
         } catch( IOException e ) {

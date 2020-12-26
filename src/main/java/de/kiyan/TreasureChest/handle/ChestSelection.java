@@ -1,12 +1,12 @@
 package de.kiyan.TreasureChest.handle;
 
 import de.kiyan.TreasureChest.Messages;
-import de.kiyan.TreasureChest.commands.TChestCommand;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +26,9 @@ public class ChestSelection {
         }
     }
 
-    public ArrayList< String > getSelectedBlocks( Player player ) {
-        if( getFirstLocation( player ) == null && getSecondLocation( player ) == null ) {
+    public HashMap< String, MaterialData >  getSelectedBlocks( Player player ) {
+        if(     getFirstLocation( player ) == null
+                && getSecondLocation( player ) == null ) {
             player.sendMessage( Messages.TCHEST_SELECT_BEFORE.getMessage( true ) );
             return null;
         }
@@ -49,7 +50,7 @@ public class ChestSelection {
             return null;
         }
 
-        ArrayList< String > blockString = new ArrayList<>();
+        HashMap< String, MaterialData > blockString = new HashMap<>();
 
         Location location3 = player.getLocation();
         int j = location3.getBlockX();
@@ -79,13 +80,13 @@ public class ChestSelection {
                 } else {
                     stringZ = "-" + ( m - i2 );
                 }
-                blockString.add( stringX + "_" + stringY + "_" + stringZ );
+                System.out.println( stringX + "_" + stringY + "_" + stringZ );
+                blockString.put( stringX + "_" + stringY + "_" + stringZ, new MaterialData( block.getType(), block.getData()) );
             }
         }
 
         return blockString;
     }
-
 
     /*
     Getter and setter if the person is selecting or not.

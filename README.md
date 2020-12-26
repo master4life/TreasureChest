@@ -1,3 +1,3 @@
 # TreasureChest
 
-creatits to those who seeks them.
+credits to those who seeks them.

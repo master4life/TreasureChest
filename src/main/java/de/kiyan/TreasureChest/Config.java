@@ -1,9 +1,5 @@
 package de.kiyan.TreasureChest;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -37,14 +33,21 @@ public class Config {
 
     public void setBlocks( String name, ArrayList< String > block ) {
         File file = new File( getDir(), name + ".yml" );
+
+        if( block == null)
+            System.out.println( "NULL ");
+        System.out.println( file.getAbsoluteFile() );
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
+
+
+        for( String bl : block ) {
+            System.out.println( bl );
+        }
         try {
-            yaml.load( file );
-        } catch( Exception e ) {
+            yaml.save( file );
+        } catch( IOException e ) {
             e.printStackTrace();
         }
-
-        yaml.set( "Items", block );
     }
 
     public boolean getExist( String name ) {

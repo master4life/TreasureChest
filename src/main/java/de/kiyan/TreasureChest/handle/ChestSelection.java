@@ -79,66 +79,13 @@ public class ChestSelection {
                 } else {
                     stringZ = "-" + ( m - i2 );
                 }
-                blockString.add(  stringX + "_" + stringY + "_" + stringZ );
+                blockString.add( stringX + "_" + stringY + "_" + stringZ );
             }
         }
 
         return blockString;
     }
 
-    public ArrayList< String > getLocationRelatedToPlayer( Player player, ArrayList< Location > loc ) {
-        ArrayList< String > arrayList = new ArrayList<>();
-        ArrayList< Block > blockList = new ArrayList<>();
-
-        if( arrayList.size() < 100 ) {
-            World world = loc.get( 0 ).getWorld();
-
-            Location location1 = loc.get( 0 );
-            Location location2 = loc.get( 1 );
-            for( int i = location1.getBlockX(); i <= location2.getBlockX(); i++ )
-                for( int n = location1.getBlockY(); n <= location2.getBlockY(); n++ )
-                    for( int i1 = location1.getBlockZ(); i1 <= location2.getBlockZ(); i1++ )
-                        blockList.add( world.getBlockAt( i, n, i1 ) );
-
-            Location location3 = player.getLocation();
-            int j = location3.getBlockX();
-            int k = location3.getBlockY();
-            int m = location3.getBlockZ();
-
-            for( Block block : blockList ) {
-                if( !block.getState().getType().equals( Material.AIR ) ) {
-                    Location location = block.getLocation();
-                    int n = location.getBlockX();
-                    int i1 = location.getBlockY();
-                    int i2 = location.getBlockZ();
-                    String stringX = " ";
-                    String stringY = " ";
-                    String stringZ = " ";
-                    if( n > j ) {
-                        stringX = "+" + ( n - j );
-                    } else {
-                        stringX = "-" + ( j - n );
-                    }
-                    if( i1 > k ) {
-                        stringY = "+" + ( i1 - k );
-                    } else {
-                        stringY = "-" + ( k - i1 );
-                    }
-                    if( i2 > m ) {
-                        stringZ = "+" + ( i2 - m );
-                    } else {
-                        stringZ = "-" + ( m - i2 );
-                    }
-                    arrayList.add( String.valueOf( stringX ) + "_" + stringZ + "_" + stringZ );
-                }
-            }
-
-        } else {
-            player.sendMessage( "[TreasureChest] You WorldEdit selection is too big!" );
-        }
-
-        return arrayList;
-    }
 
     /*
     Getter and setter if the person is selecting or not.

@@ -1,0 +1,10 @@
+name: TreasureChest
+main: de.kiyan.TreasureChest.Main
+version: 0.1
+author: Kiyan
+description: Treasure Chest add various items in box
+api-version: 1.13
+
+commands:
+  tchest:
+    description: Open TChest menu for configuration

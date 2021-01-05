@@ -1,1 +1,103 @@
+# ProtocolLib is softdepended
+# Only needed if you want the chest to have an opening animation. (Perhaps gonna change the code to NMS Reflected code in the future)
+
+
+# This option designs where the treasure chests can be opened only
+# if not added an valid world automatically chooses the first world in his list Bukkit.getWorlds().get( 0 )
 World: 'world'
+#H How long should the given item fly in the air (sec)
+Flytime: '3'
+
+# Particle Effects
+# This allows you to set up own effects during the TreasureChest process.
+Effect:
+  # This effect is the egg rounded effect shivering by the player at the start of scenery
+  initiate: "FLAME"
+  rain: "WATER_SPLASH"
+  # This is the effect type which appears by getting an rare drop
+  rare: "CRIT"
+  firstRare: "FLAME"
+  # This is the effect type which appears by getting an legendary drop
+  legendary: "FLAME"
+  firstLegendary: "TOTEM"
+
+######## Particle Effects ################
+# You can use those effects
+#
+# following particles:
+#
+# EXPLOSION_NORMAL
+# EXPLOSION_LARGE
+# EXPLOSION_HUGE
+# FIREWORKS_SPARK
+# WATER_BUBBLE
+# WATER_SPLASH
+# WATER_WAKE
+# SUSPENDED
+# SUSPENDED_DEPTH
+# CRIT
+# CRIT_MAGIC
+# SMOKE_NORMAL
+# SMOKE_LARGE
+# SPELL
+# SPELL_INSTANT
+# SPELL_MOB
+# SPELL_MOB_AMBIENT
+# SPELL_WITCH
+# DRIP_WATER
+# DRIP_LAVA
+# VILLAGER_ANGRY
+# VILLAGER_HAPPY
+# TOWN_AURA
+# NOTE
+# PORTAL
+# ENCHANTMENT_TABLE
+# FLAME
+# LAVA
+# CLOUD
+# REDSTONE
+# SNOWBALL
+# SNOW_SHOVEL
+# SLIME
+# HEART
+# BARRIER
+# ITEM_CRACK
+# BLOCK_CRACK
+# BLOCK_DUST
+# WATER_DROP
+# MOB_APPEARANCE
+# DRAGON_BREATH
+# END_ROD
+# DAMAGE_INDICATOR
+# SWEEP_ATTACK
+# FALLING_DUST
+# TOTEM
+# SPIT
+# SQUID_INK
+# BUBBLE_POP
+# CURRENT_DOWN
+# BUBBLE_COLUMN_UP
+# NAUTILUS
+# DOLPHIN
+# SNEEZE
+# CAMPFIRE_COSY_SMOKE
+# CAMPFIRE_SIGNAL_SMOKE
+# COMPOSTER
+# FLASH
+# FALLING_LAVA
+# LANDING_LAVA
+# FALLING_WATER
+# DRIPPING_HONEY
+# FALLING_HONEY
+# LANDING_HONEY
+# FALLING_NECTAR
+# SOUL_FIRE_FLAME
+# ASH
+# CRIMSON_SPORE
+# WARPED_SPORE
+# SOUL
+# DRIPPING_OBSIDIAN_TEAR
+# FALLING_OBSIDIAN_TEAR
+# LANDING_OBSIDIAN_TEAR
+# REVERSE_PORTAL
+# WHITE_ASH

@@ -62,7 +62,8 @@ public class TChest {
 
     public void build() {
         this.state = TChestState.BUILDING;
-        new Effects().createTotemCircle( playerWhoActivated, tchest );
+        Effects effect = new Effects();
+        effect.createSecondCircle( playerWhoActivated, tchest, new Config().getParticle( "initiate" ) == null ? Particle.FLAME : new Config().getParticle( "initiate" ) );
         for( Player broadcast : Bukkit.getOnlinePlayers() )
         {
             if( broadcast != playerWhoActivated)
@@ -80,7 +81,7 @@ public class TChest {
                 if( i == 0 ) {
                     playerWhoActivated.sendMessage( Messages.OPENING_TCHEST.getMessage( false ) + " §c§lNOW" );
                     // Event opening message
-                    new Effects().FrostLordEffect( TChest.this.playerWhoActivated.getLocation(), Particle.WATER_SPLASH );
+                    effect.FrostLordEffect( TChest.this.playerWhoActivated.getLocation(), Particle.WATER_SPLASH );
                     cancel();
                 }
                 i--;
@@ -210,6 +211,7 @@ public class TChest {
                 @Override
                 public void run() {
                     Effects effect = new Effects();
+                    Config config = new Config();
                     effect.spawn( clocUP, Particle.ASH, 0.1f, 0.1f, 0.1f, 0.05f, 30.0d );
                     if( this.items.size() >= 1 ) {
                         String str = getChanceType();
@@ -240,7 +242,10 @@ public class TChest {
                         list.add( ChatColor.BLUE + "Item: " + Utils.RandInt( 0, 1000 ) );
                         itemMeta.setLore( list );
                         itemStack.setItemMeta( itemMeta );
-                        effect.chestAnimation( location1 );
+                        if( Bukkit.getServer( ).getPluginManager( ).getPlugin( "ProtocolLib" ) != null)
+                        {
+                            effect.chestAnimation( location1 );
+                        }
                         Item item = TChest.this.playerWhoActivated.getWorld().dropItem( clocUP, itemStack );
                         item.setVelocity( new Vector( 0.0D, 0.25D, 0.0D ) );
                         item.setPickupDelay( 4000 );
@@ -272,14 +277,14 @@ public class TChest {
                                         if( i == 0 )
                                             effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§4§lRARE", item.getItemStack().getAmount() + "x " + "§4§l" + item.getName().replace( "§f", "§4§l" ) );
 
-                                        effect.spawn( clocUP, Particle.CRIT, 0.3f, 0.3f, 0.3f, 0.3f, 30.0d );
+                                        effect.spawn( clocUP, config.getParticle( "rare" ) == null ? Particle.CRIT : config.getParticle( "rare" ), 0.3f, 0.3f, 0.3f, 0.3f, 30.0d );
                                         i++;
 
                                         if( i == 2 )
                                             cancel();
                                     }
                                 }.runTaskTimer( Main.getInstance(), 0L, 15L );
-                                new Effects().createCircle( clocUP, 2, Particle.FLAME );
+                                effect.createCircle( clocUP, 2, config.getParticle( "firstRare" ) == null ? Particle.FLAME : config.getParticle( "firstRare" ) );
                                 continue;
                             }
                             if( str1.contains( "legendary" ) ) {
@@ -289,13 +294,13 @@ public class TChest {
                                     public void run() {
                                         if( i == 0 )
                                             effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§e§lLEGENDARY", item.getItemStack().getAmount() + "x " + "§4§l" + item.getName().replace( "§f", "§4§l" ) );
-                                        effect.spawn( clocUP, Particle.FLAME, 0.3f, 0.3f, 0.3f, 0.3f, 30.0d );
+                                        effect.spawn( clocUP, config.getParticle( "legendary" ) == null ? Particle.FLAME : config.getParticle( "legendary" ), 0.3f, 0.3f, 0.3f, 0.3f, 30.0d );
                                         i++;
                                         if( i == 2 )
                                             cancel();
                                     }
                                 }.runTaskTimer( Main.getInstance(), 0L, 15L );
-                                new Effects().createCircle( clocUP, 2, Particle.TOTEM );
+                                effect.createCircle( clocUP, 2, config.getParticle( "firstLegendary" ) == null ? Particle.TOTEM : config.getParticle( "firstLegendary" ) );
                                 new BukkitRunnable() {
                                     int i = 0;
 

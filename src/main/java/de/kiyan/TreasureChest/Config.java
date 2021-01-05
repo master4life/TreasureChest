@@ -3,6 +3,7 @@ package de.kiyan.TreasureChest;
 import de.kiyan.TreasureChest.Utils.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +31,15 @@ public class Config {
             file.mkdir();
     }
 
+    public Particle getParticle( String which )
+    {
+        String particle = plugin.getConfig().getString( "Effect." + which );
+        return Particle.valueOf( particle );
+    }
+    public String get( String name ) {
+        return plugin.getConfig().getString( name );
+    }
+
     public World getDesignatedWorld() {
         String sWorld = plugin.getConfig().getString( "World" );
         if( sWorld == null ) {
@@ -37,7 +47,7 @@ public class Config {
         }
         World world = Bukkit.getWorld( sWorld );
         if( world == null ) {
-            world = Bukkit.getWorld( "world" );
+            world = Bukkit.getWorlds().get( 0 );
         }
         return world;
     }
@@ -133,9 +143,9 @@ public class Config {
             return null;
 
         for( String blocks : yaml.getConfigurationSection( "Blocks" ).getKeys( false ) ) {
-            String str4 = yaml.getString( "Blocks." + blocks );
-            Material material = Material.getMaterial( str4.substring( 0, str4.indexOf( "(" ) ) );
-            String str5 = str4.substring( str4.indexOf( "(" ) + 1 );
+            String block = yaml.getString( "Blocks." + blocks );
+            Material material = Material.getMaterial( block.substring( 0, block.indexOf( "(" ) ) );
+            String str5 = block.substring( block.indexOf( "(" ) + 1 );
             str5 = str5.substring( 0, str5.indexOf( ")" ) );
             byte b = Byte.parseByte( str5 );
             MaterialData materialData = new MaterialData( material, b );

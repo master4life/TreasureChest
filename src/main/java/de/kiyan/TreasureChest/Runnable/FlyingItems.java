@@ -13,14 +13,15 @@ import org.bukkit.util.Vector;
 
 public class FlyingItems extends BukkitRunnable
 {
-    private Location location;
-    private Location frontLocation;
-    private double highest;
-    private String text;
-    private ItemStack itemstack;
-    private Item item;
+    final private Location location;
+    final private Location frontLocation;
+    final private double highest;
+    final private String text;
+    final private ItemStack itemstack;
+    final private Item item;
+    private Integer height;
 
-    public FlyingItems( ItemStack is, Player player, double height, Plugin plugin )
+    public FlyingItems( ItemStack is, Player player, int height, Plugin plugin )
     {
         this.location = player.getLocation();
         Vector direction = player.getLocation().getDirection();
@@ -32,18 +33,20 @@ public class FlyingItems extends BukkitRunnable
         this.text = is.getItemMeta().getDisplayName();
         this.highest = height;
         this.item = spawn();
+        this.height = ( height * 10 );
         runTaskTimer( plugin, 1L, 2L );
     }
 
     public void run()
     {
-        if( item.getLocation().getY() >= getLocation().getY() + getHighest())
+        if( getHighest() <= 0 )
         {
             cancel();
             item.remove();
             new Effects().coneEffect( item.getLocation(), Particle.CLOUD );
         }
         item.setVelocity( new Vector( 0.0, 0.2, 0.0) );
+        this.height--;
     }
 
     public Item spawn() {

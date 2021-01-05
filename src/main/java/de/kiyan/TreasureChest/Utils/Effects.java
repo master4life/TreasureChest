@@ -4,7 +4,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.kiyan.TreasureChest.Main;
 import de.kiyan.TreasureChest.TChest;
 import org.bukkit.*;
@@ -16,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Random;
-import java.util.UUID;
 
 public class Effects {
     public void spawn( Location location, Particle effect, Double speed, Double data ) {
@@ -25,42 +23,6 @@ public class Effects {
 
     public void spawn( Location location, Particle effect, Float x, Float y, Float z, Float speed, Double data ) {
         Bukkit.getWorld( location.getWorld().getName() ).spawnParticle( effect, location, 1, x, y, z );
-    }
-
-    public void dragonAnimation( Player player ) {
-        PacketContainer packet = new PacketContainer( PacketType.Play.Server.SPAWN_ENTITY_LIVING );
-
-        // Entity ID
-        packet.getIntegers().write( 0, 323123 );
-        packet.getModifier().writeDefaults();
-        // Entity UUID
-        packet.getUUIDs().write( 0, UUID.randomUUID() );
-        // Entity Type
-        packet.getIntegers().write(1, (int) 19);
-        // Set location
-        packet.getDoubles().write( 0, player.getLocation().getX() );
-        packet.getDoubles().write( 1, player.getLocation().getY() );
-        packet.getDoubles().write( 2, player.getLocation().getZ() );
-
-        packet.getBytes().write(0, (byte) 0);
-        packet.getBytes().write(1, (byte) 0);
-        packet.getBytes().write(2, (byte) 0);
-        packet.getIntegers().write(2, 0);
-        packet.getIntegers().write(3, 0);
-        packet.getIntegers().write(4, 0);
-        try {
-            ProtocolLibrary.getProtocolManager().broadcastServerPacket( packet );
-        } catch( Exception e ) {
-            e.printStackTrace();
-        }
-    }
-
-    public WrappedDataWatcher getDefaultWatcher( World world, EntityType type ) {
-        Entity entity = world.spawnEntity( new Location( world, 0, 256, 0 ), type );
-        WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher( entity ).deepClone();
-
-        entity.remove();
-        return watcher;
     }
 
     public void chestAnimation( Location loc ) {
@@ -116,7 +78,7 @@ public class Effects {
         itemDescription.setMetadata( "TChest", ( MetadataValue ) new FixedMetadataValue( Main.getInstance(), player.getName() ) );
     }
 
-    public void createTotemCircle( Player player, TChest tchest ) {
+    public void createSecondCircle( Player player, TChest tchest, Particle particle ) {
         new BukkitRunnable() {
             double i = 0.0;
             Location loc, first, second;
@@ -128,8 +90,8 @@ public class Effects {
                 first = loc.clone().add( Math.cos( i ), Math.sin( i ) + 1, Math.sin( i ) );
                 second = loc.clone().add( Math.cos( i + Math.PI ), Math.sin( i ) + 1, Math.sin( i + Math.PI ) );
 
-                player.getWorld().spawnParticle( Particle.FLAME, first, 0 );
-                player.getWorld().spawnParticle( Particle.FLAME, second, 0 );
+                player.getWorld().spawnParticle( particle, first, 0 );
+                player.getWorld().spawnParticle( particle, second, 0 );
                 if( tchest.getState().equals( TChest.TChestState.DESTROYING ) )
                     this.cancel();
             }

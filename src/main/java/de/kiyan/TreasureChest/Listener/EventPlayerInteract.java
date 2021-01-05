@@ -3,6 +3,7 @@ package de.kiyan.TreasureChest.Listener;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import de.kiyan.TreasureChest.Config;
 import de.kiyan.TreasureChest.Main;
 import de.kiyan.TreasureChest.Messages;
 import de.kiyan.TreasureChest.Runnable.FlyingItems;
@@ -44,7 +45,7 @@ public class EventPlayerInteract implements Listener {
                             }
                         }
 
-                        new FlyingItems( is, player, 7.0d, Main.getInstance());
+                        new FlyingItems( is, player, Integer.parseInt( new Config().get( "Flytime" ) == null ? "3" : new Config().get( "Flytime" )  ), Main.getInstance());
 
                         event.setCancelled( true );
                         new TChest( player, is.getItemMeta().getDisplayName().split( "§5§l" )[ 1 ] );

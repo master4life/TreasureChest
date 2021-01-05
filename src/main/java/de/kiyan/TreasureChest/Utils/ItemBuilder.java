@@ -1,7 +1,13 @@
 package de.kiyan.TreasureChest.Utils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -77,6 +83,23 @@ public class ItemBuilder {
         SkullMeta meta = (SkullMeta) stack.getItemMeta();
         meta.setOwner(owner);
         setItemMeta(meta);
+        return this;
+    }
+
+    public ItemBuilder setProfileHeader( String uuid, String texture, String signature )
+    {
+        SkullMeta headMeta = ( SkullMeta ) stack.getItemMeta();
+        GameProfile skull = new GameProfile( UUID.fromString( uuid ), "skin1364285063" );
+        skull.getProperties().put( "textures", new Property( "textures", texture) );
+        Field profileField = null;
+        try {
+            profileField = stack.getItemMeta().getClass().getDeclaredField( "profile" );
+            profileField.setAccessible( true );
+            profileField.set( headMeta, skull );
+        } catch( NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1 ) {
+            e1.printStackTrace();
+        }
+        stack.setItemMeta( headMeta );
         return this;
     }
 

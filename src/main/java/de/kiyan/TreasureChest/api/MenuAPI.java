@@ -1,4 +1,4 @@
-package de.kiyan.TreasureChest.Utils;
+package de.kiyan.TreasureChest.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
@@ -113,7 +113,10 @@ public class MenuAPI implements Listener
         Inventory inventory = event.getInventory( );
         if( inventory.getHolder( ) instanceof Menu )
         {
-            event.setCancelled( true );
+            Menu menu = ( Menu ) inventory.getHolder( );
+
+            if( !menu.allowMenuModify() )
+                event.setCancelled( true );
             ( ( Player ) event.getWhoClicked( ) ).updateInventory( );
 
             switch( event.getAction( ) )
@@ -132,7 +135,6 @@ public class MenuAPI implements Listener
                     break;
             }
 
-            Menu menu = ( Menu ) inventory.getHolder( );
             if( event.getWhoClicked( ) instanceof Player )
             {
                 Player player = ( Player ) event.getWhoClicked( );

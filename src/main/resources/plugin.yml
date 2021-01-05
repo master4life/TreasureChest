@@ -4,6 +4,7 @@ version: 0.1
 author: Kiyan
 description: Treasure Chest add various items in box
 api-version: 1.13
+depend: [ProtocolLib]
 
 commands:
   tchest:

@@ -1,4 +1,4 @@
-package de.kiyan.TreasureChest.Utils.NMS;
+package de.kiyan.TreasureChest.api.NMS;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

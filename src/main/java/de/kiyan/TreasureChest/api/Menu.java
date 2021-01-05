@@ -1,4 +1,4 @@
-package de.kiyan.TreasureChest.Utils;
+package de.kiyan.TreasureChest.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,6 +22,7 @@ public class Menu implements InventoryHolder
     private String title;
     private int rows;
     private boolean exitOnClickOutside = false;
+    private boolean allowModify = false;
     private MenuAPI.MenuCloseBehaviour menuCloseBehaviour;
     private boolean bypassMenuCloseBehaviour = false;
     private Menu parentMenu;
@@ -253,6 +254,27 @@ public class Menu implements InventoryHolder
             inventory = Bukkit.createInventory( this, rows * 9, title );
         }
         return inventory;
+    }
+
+    /**
+     * Determines whether this menu should be modifed or not
+     *
+     *
+     */
+    public void setallowMenuModify( boolean allowModify )
+    {
+        this.allowModify = allowModify;
+    }
+
+    /**
+     * Determines whether this menu should be modifed or not
+     *
+     *
+     * @return True, if player should be allowed to modify it
+     */
+    public boolean allowMenuModify( )
+    {
+        return allowModify;
     }
 
     /**

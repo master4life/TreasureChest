@@ -1,4 +1,4 @@
-package de.kiyan.TreasureChest.Utils;
+package de.kiyan.TreasureChest.api;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public abstract class MenuItem {
      *
      * @param text The title text to display on mouse over
      */
-    public MenuItem(String text) {
+    public MenuItem( String text) {
         this(text, new ItemStack(Material.PAPER));
     }
 

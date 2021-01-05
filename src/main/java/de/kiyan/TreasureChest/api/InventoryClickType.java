@@ -1,4 +1,4 @@
-package de.kiyan.TreasureChest.Utils;
+package de.kiyan.TreasureChest.api;
 
 import org.bukkit.event.inventory.InventoryAction;
 

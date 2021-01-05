@@ -1,4 +1,4 @@
-package de.kiyan.TreasureChest.Utils;
+package de.kiyan.TreasureChest.api;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import de.kiyan.TreasureChest.Main;
-import de.kiyan.TreasureChest.Utils.NMS.NMSManager;
+import de.kiyan.TreasureChest.api.NMS.NMSManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -72,7 +72,8 @@ public class AnvilGUI {
         ContainerAnvil = NMSManager.getNMSClass("ContainerAnvil");
         ChatMessage = NMSManager.getNMSClass("ChatMessage");
         EntityHuman = NMSManager.getNMSClass("EntityHuman");
-        if(useNewVersion) {
+        if( useNewVersion )
+        {
             ContainerAccess = NMSManager.getNMSClass("ContainerAccess");
             Containers = NMSManager.getNMSClass("Containers");
         }

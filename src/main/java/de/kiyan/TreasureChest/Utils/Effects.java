@@ -17,12 +17,36 @@ import org.bukkit.util.Vector;
 import java.util.Random;
 
 public class Effects {
-    public void spawn( Location location, Particle effect, Double speed, Double data ) {
-        Bukkit.getWorld( location.getWorld().getName() ).spawnParticle( effect, location, 1, 0.0d, 0.0d, 0.0d );
-    }
-
     public void spawn( Location location, Particle effect, Float x, Float y, Float z, Float speed, Double data ) {
         Bukkit.getWorld( location.getWorld().getName() ).spawnParticle( effect, location, 1, x, y, z );
+    }
+
+    public void playSpiral( Location loc ) {
+        new BukkitRunnable() {
+            float j = 0.0F;
+            float heightPosition = 4.0F;
+            int i = 0;
+
+            public void run() {
+                if( i >= 40 ) {
+                    cancel();
+                }
+                i++;
+
+                Location l = new Location( loc.getWorld(), loc.getX() + 0.5D, loc.getY() + 0.5D, loc.getZ() + 0.5D );
+                Location l2 = new Location( loc.getWorld(), loc.getX() + 0.5D, loc.getY() + 0.5D, loc.getZ() + 0.5D );
+                Vector v = new Vector( this.j * Math.sin( this.j * Math.PI / 2.0D ) * 0.2D, ( this.j + this.heightPosition ), this.j * Math.cos( this.j * Math.PI / 2.0D ) * 0.2D );
+                l.add( v );
+                l.getWorld().spawnParticle( Particle.SPELL_WITCH, l, 4, 0.0D, 0.0D, 0.0D, 0.0D );
+
+                Vector v2 = new Vector( this.j * Math.sin( this.j * Math.PI / 2.0D ) * -0.2D, ( this.j + this.heightPosition ), this.j * Math.cos( this.j * Math.PI / 2.0D ) * -0.2D );
+                l2.add( v2 );
+                l2.getWorld().spawnParticle( Particle.SPELL_WITCH, l2, 4, 0.0D, 0.0D, 0.0D, 0.0D );
+                this.j = ( float ) ( this.j - 0.12D );
+                if( this.j <= -4.0F )
+                    this.j = 0.0F;
+            }
+        }.runTaskTimer( Main.getInstance(), 1L, 1L );
     }
 
     public void chestAnimation( Location loc ) {
@@ -35,7 +59,7 @@ public class Effects {
         ProtocolLibrary.getProtocolManager().broadcastServerPacket( chest );
     }
 
-    public void coneEffect( Location loc, Particle particleEffect ) {
+    public void coneEffect( Location location, Particle particleEffect ) {
         new BukkitRunnable() {
             double phi = 0.0;
 
@@ -46,9 +70,9 @@ public class Effects {
                         final double n3 = 0.4 * ( 6.283185307179586 - n ) * 0.5 * Math.cos( n + this.phi + n2 * 3.141592653589793 );
                         final double n4 = 0.5 * n;
                         final double n5 = 0.4 * ( 6.283185307179586 - n ) * 0.5 * Math.sin( n + this.phi + n2 * 3.141592653589793 );
-                        loc.add( n3, n4, n5 );
-                        spawn( loc, particleEffect, 0.0d, 1.0d );
-                        loc.subtract( n3, n4, n5 );
+                        location.add( n3, n4, n5 );
+                        location.getWorld().spawnParticle( particleEffect, location, 1 );
+                        location.subtract( n3, n4, n5 );
                     }
                 }
                 if( this.phi > 6.283185307179586 ) {
@@ -107,7 +131,7 @@ public class Effects {
                     double n = this.i * Math.cos( i );
                     double n2 = this.i * Math.sin( i );
                     location.add( n, 0.0, n2 );
-                    spawn( location, particleEffect, 0.0d, 1.0d );
+                    location.getWorld().spawnParticle( particleEffect, location, 1 );
                     location.subtract( n, 0.0, n2 );
                 }
                 this.i += 0.1;
@@ -130,12 +154,12 @@ public class Effects {
                     double n4 = 0.3 * ( 9.42477796076938 - this.t ) * Math.sin( this.t + n );
 
                     location.add( n2, n3, n4 );
-                    spawn( location, particleEffect, 0.0d, 3.0d );
-                    spawn( location.add( 0.0, 0.2, 0.0 ), particleEffect, 0.0d, 3.0d );
+                    location.getWorld().spawnParticle( particleEffect, location, 3);
+                    location.getWorld().spawnParticle( particleEffect, location.add( 0.0, 0.2, 0.0 ), 3 );
                     location.subtract( n2, n3 + 0.2, n4 );
                     if( this.t >= 12.566370614359172 ) {
                         location.add( n2, n3, n4 );
-                        spawn( location, particleEffect, 1.0d, 50.0d );
+                        location.getWorld().spawnParticle( particleEffect, location, 50 );
                         this.cancel();
                         return;
                     }
@@ -147,22 +171,22 @@ public class Effects {
     public void createHelix( Location location, double n, Particle particleEffect, int n2 ) {
         new BukkitRunnable() {
             double y = n2;
-            double raggio = n;
+            double radius = n;
 
             public void run() {
-                double n = this.raggio * Math.cos( this.y );
-                double n2 = this.raggio * Math.sin( this.y );
-                double n3 = this.raggio * Math.sin( this.y );
-                double n4 = this.raggio * Math.cos( this.y );
+                double n = this.radius * Math.cos( this.y );
+                double n2 = this.radius * Math.sin( this.y );
+                double n3 = this.radius * Math.sin( this.y );
+                double n4 = this.radius * Math.cos( this.y );
 
-                spawn( new Location( location.getWorld(), location.getX() + n, location.getY() + this.y, location.getZ() + n2 ), particleEffect, 0.0d, 1.0d );
-                spawn( new Location( location.getWorld(), location.getX() + n, location.getY() + this.y - 0.03, location.getZ() + n2 ), particleEffect, 0.0d, 1.0d );
-                spawn( new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y, location.getZ() + n4 ), particleEffect, 0.0d, 1.0d );
-                spawn( new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y - 0.03, location.getZ() + n4 ), particleEffect, 0.0d, 1.0d );
+                location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n, location.getY() + this.y, location.getZ() + n2 ), 1 );
+                location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n, location.getY() + this.y - 0.03, location.getZ() + n2 ), 1 );
+                location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y, location.getZ() + n4 ), 1);
+                location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y - 0.03, location.getZ() + n4 ), 1 );
 
                 this.y -= 0.2;
-                if( this.raggio > 1.0 ) {
-                    this.raggio -= 0.1;
+                if( this.radius > 1.0 ) {
+                    this.radius -= 0.1;
                 }
                 if( this.y < 0.0 ) {
                     this.cancel();

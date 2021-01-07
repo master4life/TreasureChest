@@ -1,9 +1,16 @@
 package de.kiyan.TreasureChest;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import de.kiyan.TreasureChest.Listener.*;
 import de.kiyan.TreasureChest.api.MenuAPI;
 import de.kiyan.TreasureChest.commands.TChestCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -5,6 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -134,27 +137,6 @@ public class Config {
         return arrayList;
     }
 
-    public HashMap< String, MaterialData > getBlocks( String name ) {
-        File file = new File( getDir(), name + ".yml" );
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
-
-        HashMap< String, MaterialData > hashMap1 = new HashMap<>();
-        if(  yaml.getConfigurationSection( "Blocks" ) == null )
-            return null;
-
-        for( String blocks : yaml.getConfigurationSection( "Blocks" ).getKeys( false ) ) {
-            String block = yaml.getString( "Blocks." + blocks );
-            Material material = Material.getMaterial( block.substring( 0, block.indexOf( "(" ) ) );
-            String str5 = block.substring( block.indexOf( "(" ) + 1 );
-            str5 = str5.substring( 0, str5.indexOf( ")" ) );
-            byte b = Byte.parseByte( str5 );
-            MaterialData materialData = new MaterialData( material, b );
-            hashMap1.put( blocks, materialData );
-        }
-
-        return hashMap1;
-    }
-
     public void removeBlocks( String name ) {
         File file = new File( getDir(), name + ".yml" );
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
@@ -168,7 +150,25 @@ public class Config {
         }
     }
 
-    public void setBlocks( String name, HashMap< String, MaterialData > block ) {
+    public HashMap< String, BlockData > getBlocks( String name ) {
+        File file = new File( getDir(), name + ".yml" );
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
+
+        HashMap< String, BlockData > hashMap1 = new HashMap<>();
+        if(  yaml.getConfigurationSection( "Blocks" ) == null )
+            return null;
+
+        for( String coord : yaml.getConfigurationSection( "Blocks" ).getKeys( false ) ) {
+            String block = yaml.getString( "Blocks." + coord );
+
+            BlockData data = Bukkit.createBlockData( block );
+            hashMap1.put( coord, data );
+        }
+
+        return hashMap1;
+    }
+
+    public void setBlocks( String name, HashMap< String, BlockData > block ) {
         File file = new File( getDir(), name + ".yml" );
 
         if( block == null )
@@ -176,11 +176,11 @@ public class Config {
 
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
 
-        for( Map.Entry< String, MaterialData > entry : block.entrySet() ) {
+        for( Map.Entry< String, BlockData > entry : block.entrySet() ) {
             String key = entry.getKey();
-            MaterialData value = entry.getValue();
+            BlockData value = entry.getValue();
 
-            yaml.set( "Blocks." + key, value.toString() );
+            yaml.set( "Blocks." + key, value.getAsString() );
         }
 
         try {
@@ -234,7 +234,7 @@ public class Config {
 
     public void setTierList( String name ) {
         File file = new File( getDir(), name + ".yml" );
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
+        YamlConfiguration yaml = new YamlConfiguration();
 
         yaml.set( "Tier.common", "80.0" );
         yaml.set( "Tier.rare", "40.0" );

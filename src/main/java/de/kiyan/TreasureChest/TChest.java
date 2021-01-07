@@ -1,16 +1,23 @@
 package de.kiyan.TreasureChest;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.BlockPosition;
 import de.kiyan.TreasureChest.Utils.Effects;
 import de.kiyan.TreasureChest.Utils.Utils;
 import org.bukkit.*;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,7 +33,7 @@ public class TChest {
     private ArrayList< Item > drops;
     private Location center;
     private TChest tchest;
-    private ArrayList< Block > chests;
+    private HashMap< Block, BlockData > chests;
     private String selected;
     private TChestState state;
     private double dist;
@@ -39,8 +46,7 @@ public class TChest {
         Config config = new Config();
         if( !config.exist( name ) )
             return;
-        if( config.getBlocks( name ) == null )
-        {
+        if( config.getBlocks( name ) == null ) {
             player.sendMessage( Messages.BLOCKS_HAVENT_SET.getMessage( true ) );
             return;
         }
@@ -64,9 +70,8 @@ public class TChest {
         this.state = TChestState.BUILDING;
         Effects effect = new Effects();
         effect.createSecondCircle( playerWhoActivated, tchest, new Config().getParticle( "initiate" ) == null ? Particle.FLAME : new Config().getParticle( "initiate" ) );
-        for( Player broadcast : Bukkit.getOnlinePlayers() )
-        {
-            if( broadcast != playerWhoActivated)
+        for( Player broadcast : Bukkit.getOnlinePlayers() ) {
+            if( broadcast != playerWhoActivated )
                 broadcast.sendMessage( Messages.BROADCAST.getMessage( false )
                         .replace( "{player}", playerWhoActivated.getName().toUpperCase( Locale.ROOT ) )
                         .replace( "{type}", selected.toUpperCase( Locale.ROOT ) ) );
@@ -76,7 +81,7 @@ public class TChest {
             int i = 3;
 
             public void run() {
-                if( i > 0) playerWhoActivated.sendMessage( Messages.OPENING_TCHEST.getMessage( false ) + " " + i );
+                if( i > 0 ) playerWhoActivated.sendMessage( Messages.OPENING_TCHEST.getMessage( false ) + " " + i );
 
                 if( i == 0 ) {
                     playerWhoActivated.sendMessage( Messages.OPENING_TCHEST.getMessage( false ) + " §c§lNOW" );
@@ -95,21 +100,24 @@ public class TChest {
         this.Backup = new HashMap<>();
         this.center = new Location( location.getWorld(), location.getBlockX() + 0.5D, location.getBlockY(), location.getBlockZ() + 0.5D );
         this.drops = new ArrayList<>();
-        this.chests = new ArrayList<>();
-        HashMap< String, MaterialData > hashBlocks = new Config().getBlocks( selected );
+        this.chests = new HashMap<>();
+        HashMap< String, BlockData > hashBlocks = new Config().getBlocks( selected );
         String[] arrayBlocks = new String[ hashBlocks.size() ];
         int index = 0;
         this.dist = 1.0D;
 
-        for( Map.Entry< String, MaterialData > mapEntry : hashBlocks.entrySet() ) {
+        for( Map.Entry< String, BlockData > mapEntry : hashBlocks.entrySet() ) {
             arrayBlocks[ index ] = mapEntry.getKey();
             index++;
         }
+
         new BukkitRunnable() {
             public void run() {
+
                 for( String arrayBlock : arrayBlocks ) {
-                    String str = ( String ) arrayBlock;
-                    String[] split = str.split( "_" );
+
+                    String coord = ( String ) arrayBlock;
+                    String[] split = coord.split( "_" );
                     Location location = new Location( TChest.this.center.getWorld(),
                             ( TChest.this.center.getBlockX() + Integer.parseInt( split[ 0 ] ) ) + 0.5D,
                             ( TChest.this.center.getBlockY() + Integer.parseInt( split[ 1 ] ) ),
@@ -117,20 +125,23 @@ public class TChest {
                     Block block = location.getBlock();
                     if( TChest.this.center.distance( location ) <= TChest.this.dist && !TChest.this.Backup.containsKey( block ) ) {
                         TChest.this.Backup.put( block, block.getBlockData() );
-                        if( new Config().getBlocks( selected ).get( str ).getItemType().equals( Material.CHEST ) ) {
-                            TChest.this.chests.add( block );
+
+                        BlockData blockD = new Config().getBlocks( selected ).get( coord );
+
+                        if( blockD.getMaterial().equals( Material.CHEST ) || blockD.getMaterial().equals( Material.TRAPPED_CHEST )) {
+                            TChest.this.chests.put( block, blockD );
                         } else {
-                            block.setType( new Config().getBlocks( selected ).get( str ).getItemType() );
+                            block.setBlockData( new Config().getBlocks( selected ).get( coord ) );
                             block.getWorld().playEffect( location, Effect.STEP_SOUND, 1, 20 );
                         }
                     }
                 }
+
                 TChest tChest = TChest.this;
                 tChest.dist = tChest.dist + 0.5;
                 if( TChest.this.dist > 6.5 ) {
                     cancel();
                 }
-
             }
         }.runTaskTimer( Main.getInstance(), 60L, 15L );
         new BukkitRunnable() {
@@ -138,20 +149,22 @@ public class TChest {
 
             public void run() {
                 if( !TChest.this.chests.isEmpty() && i < TChest.this.chests.size() ) {
-                    Block block = ( Block ) TChest.this.chests.get( i );
+                    Block block = ( Block ) TChest.this.chests.keySet().toArray()[i];
+                    BlockData blockData = ( BlockData ) TChest.this.chests.values().toArray()[i];
                     Location bloc = block.getLocation();
-                    new Effects().createHelix( location, 3.0, Particle.FLAME, 8 );
-                    new BukkitRunnable() {
+                    //effect.createHelix( location, 3.0, Particle.FLAME, 8 );
+                    effect.playSpiral( bloc );
 
+                    new BukkitRunnable() {
                         public void run() {
-                            block.setType( Material.CHEST );
+                            //Directional directional = ( Directional ) block.getBlockData();
+                            //directional.setFacing( Utils.yawToFace( Utils.getLookAtYaw( bloc.toVector().subtract( TChest.this.playerWhoActivated.getLocation().toVector() ) ), false ).getOppositeFace() );
                             block.getWorld().playSound( block.getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.0f );
-                            Directional directional = ( Directional ) block.getBlockData();
-                            directional.setFacing( Utils.yawToFace( Utils.getLookAtYaw( bloc.toVector().subtract( TChest.this.playerWhoActivated.getLocation().toVector() ) ), false ).getOppositeFace() );
-                            block.setBlockData( directional );
+                            block.setBlockData( blockData );
                             block.setMetadata( "TChest", ( MetadataValue ) new FixedMetadataValue( Main.getInstance(), TChest.this.getP().getName() ) );
                         }
-                    }.runTaskLater( Main.getInstance(), 70L );
+                    }.runTaskLater( Main.getInstance(), 40L );
+
                     ++i;
                     if( i == TChest.this.chests.size() + 1 )
                         cancel();
@@ -159,7 +172,7 @@ public class TChest {
                     cancel();
                 }
             }
-        }.runTaskTimer( Main.getInstance(), 140L, 50L );
+        }.runTaskTimer( Main.getInstance(), 120L, 50L );
         this.state = TChestState.WAIT;
         process();
     }
@@ -170,7 +183,7 @@ public class TChest {
 
             public void run() {
                 if( !TChest.this.chests.isEmpty() ) {
-                    TChest.this.openChest( TChest.this.chests.get( i ) );
+                    TChest.this.openChest( (Block) TChest.this.chests.keySet().toArray()[ i ] );
 
                     if( i + 1 == TChest.this.chests.size() ) {
                         TChest.this.destroy();
@@ -188,7 +201,7 @@ public class TChest {
 
     private String getChanceType() {
         String[] tier = new Config().getTierChance( TChest.this.selected );
-        Double d = Double.parseDouble( String.valueOf( Utils.RandInt( 0, 100 ) ) );
+        double d = Double.parseDouble( String.valueOf( Utils.RandInt( 0, 100 ) ) );
         if( d <= Double.parseDouble( tier[ 2 ] ) ) {
             return "legendary";
         } else if( d <= Double.parseDouble( tier[ 1 ] ) ) {
@@ -203,7 +216,6 @@ public class TChest {
         Location clocUP = Utils.getBlockCenterUP( block.getLocation() );
         if( block.hasMetadata( "TChest" ) & ( ( ( MetadataValue ) block.getMetadata( "TChest" ).get( 0 ) ).asString().equals( "none" ) ? 0 : 1 ) != 0 ) {
             block.setMetadata( "TChest", ( MetadataValue ) new FixedMetadataValue( Main.getInstance(), "none" ) );
-            location1.getWorld().playSound( location1, Sound.BLOCK_CHEST_OPEN, 1.0F, 1.0F );
             new BukkitRunnable() {
                 ArrayList< ItemStack > items = new Config().getItems( TChest.this.selected, true );
                 String line = "";
@@ -242,8 +254,8 @@ public class TChest {
                         list.add( ChatColor.BLUE + "Item: " + Utils.RandInt( 0, 1000 ) );
                         itemMeta.setLore( list );
                         itemStack.setItemMeta( itemMeta );
-                        if( Bukkit.getServer( ).getPluginManager( ).getPlugin( "ProtocolLib" ) != null)
-                        {
+                        location1.getWorld().playSound( location1, Sound.BLOCK_CHEST_OPEN, 1.0F, 1.0F );
+                        if( Bukkit.getServer().getPluginManager().getPlugin( "ProtocolLib" ) != null ) {
                             effect.chestAnimation( location1 );
                         }
                         Item item = TChest.this.playerWhoActivated.getWorld().dropItem( clocUP, itemStack );
@@ -256,14 +268,12 @@ public class TChest {
                         else
                             this.line = ( "§a§l" + itemStack.getAmount() + " " + itemMeta.toString() ).replace( "_", " " );
 
-                        for( String str1 : list )
-                        {
-                            if( str1.contains( "common" ) )
-                            {
+                        for( String str1 : list ) {
+                            if( str1.contains( "common" ) ) {
                                 new BukkitRunnable() {
 
                                     public void run() {
-                                        effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§f§lCOMMON",item.getItemStack().getAmount() + "x " + "§f§l" + item.getName().replace( "§f", "§f§l" ) );
+                                        effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§f§lCOMMON", item.getItemStack().getAmount() + "x " + "§f§l" + item.getName().replace( "§f", "§f§l" ) );
                                         cancel();
                                     }
                                 }.runTaskTimer( Main.getInstance(), 0L, 15L );
@@ -287,7 +297,8 @@ public class TChest {
                                 effect.createCircle( clocUP, 2, config.getParticle( "firstRare" ) == null ? Particle.FLAME : config.getParticle( "firstRare" ) );
                                 continue;
                             }
-                            if( str1.contains( "legendary" ) ) {
+                            if( str1.contains( "legendary" ) )
+                            {
                                 new BukkitRunnable() {
                                     int i = 0;
 
@@ -331,17 +342,22 @@ public class TChest {
                 for( i = 0; i < arrayOfObject.length; i++ ) {
                     Block block = ( Block ) arrayOfObject[ i ];
                     Location location = Utils.getBlockCenter( block.getLocation() );
+                    if( block.getType() == Material.WALL_TORCH
+                            || block.getType().name().contains( "BANNER" )
+                            || block.getType() == Material.REDSTONE_WALL_TORCH
+                            || block.getType() == Material.REDSTONE_WIRE || block.getType() == Material.REDSTONE ) {
+                        block.getWorld().playEffect( location, Effect.STEP_SOUND, 1 );
+                        block.setBlockData( TChest.this.Backup.get( block ) );
+                        TChest.this.Backup.remove( block );
+                    }
                     if( location.distance( Utils.getBlockCenter( TChest.this.center.getBlock().getLocation() ) ) >= TChest.this.dist && TChest.this.Backup.containsKey( block ) ) {
                         block.getWorld().playEffect( location, Effect.STEP_SOUND, 1 );
-                        block.setType( TChest.this.Backup.get( block ).getMaterial() );
+                        block.removeMetadata( "TChest", Main.getInstance() );
                         block.setBlockData( TChest.this.Backup.get( block ) );
 
                         TChest.this.Backup.remove( block );
-                        for( Entity ent : Bukkit.getWorld( playerWhoActivated.getWorld().getName() ).getEntities())
-                        {
-                            if( ent.hasMetadata( "TChest" )
-                                    && ent.getMetadata( "TChest" ).get( 0 ).asString().equalsIgnoreCase( playerWhoActivated.getName() ) )
-                            {
+                        for( Entity ent : Bukkit.getWorld( playerWhoActivated.getWorld().getName() ).getEntities() ) {
+                            if( ent.hasMetadata( "TChest" ) && ent.getMetadata( "TChest" ).get( 0 ).asString().equalsIgnoreCase( playerWhoActivated.getName() ) ) {
                                 LivingEntity entity = ( LivingEntity ) ent;
                                 if( entity instanceof ArmorStand ) {
                                     entity.setHealth( 0.0D );
@@ -360,6 +376,7 @@ public class TChest {
                             item.remove();
                             continue;
                         }
+
                         if( TChest.this.playerWhoActivated.getInventory().firstEmpty() != -1 ) {
                             ItemStack itemStack = item.getItemStack();
                             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -397,7 +414,7 @@ public class TChest {
                     cancel();
                 }
             }
-        }.runTaskTimer( Main.getInstance(), 40L, 15L );
+        }.runTaskTimer( Main.getInstance(), 20L, 15L );
     }
     /*
                 < Getter and setter methods >
@@ -408,8 +425,7 @@ public class TChest {
         return this.state;
     }
 
-    public Location getCenter()
-    {
+    public Location getCenter() {
         return this.center;
     }
 

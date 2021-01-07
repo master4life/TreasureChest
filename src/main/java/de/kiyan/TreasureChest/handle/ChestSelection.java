@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
@@ -27,7 +28,7 @@ public class ChestSelection {
         }
     }
 
-    public HashMap< String, MaterialData > getSelectedBlocks( Player player ) {
+    public HashMap< String, BlockData > getSelectedBlocks( Player player ) {
         if( getFirstLocation( player ) == null
                 && getSecondLocation( player ) == null ) {
             player.sendMessage( Messages.TCHEST_SELECT_BEFORE.getMessage( true ) );
@@ -64,7 +65,7 @@ public class ChestSelection {
             return null;
         }
 
-        HashMap< String, MaterialData > blockString = new HashMap<>();
+        HashMap< String, BlockData > blockString = new HashMap<>();
 
         Location location3 = getCenter( player, loc2, loc1 );
         int j = location3.getBlockX();
@@ -95,7 +96,7 @@ public class ChestSelection {
                     stringZ = "-" + ( m - i2 );
                 }
 
-                blockString.put( String.valueOf( stringX ) + "_" + stringY + "_" + stringZ, new MaterialData( bl.getType(), bl.getData() ) );
+                blockString.put( stringX + "_" + stringY + "_" + stringZ, bl.getBlockData() );
             }
         }
 

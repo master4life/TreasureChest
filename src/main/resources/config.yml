@@ -12,7 +12,7 @@ Flytime: '3'
 # This allows you to set up own effects during the TreasureChest process.
 Effect:
   # This effect is the egg rounded effect shivering by the player at the start of scenery
-  initiate: "FLAME"
+  initiate: "SPELL"
   rain: "WATER_SPLASH"
   # This is the effect type which appears by getting an rare drop
   rare: "CRIT"

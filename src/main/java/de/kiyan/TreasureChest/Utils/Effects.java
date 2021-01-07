@@ -1,9 +1,5 @@
 package de.kiyan.TreasureChest.Utils;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.BlockPosition;
 import de.kiyan.TreasureChest.Main;
 import de.kiyan.TreasureChest.TChest;
 import org.bukkit.*;
@@ -14,6 +10,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Constructor;
 import java.util.Random;
 
 public class Effects {
@@ -49,15 +46,47 @@ public class Effects {
         }.runTaskTimer( Main.getInstance(), 1L, 1L );
     }
 
+    public void chestAnimation( Location location ) {
+        try {
+            Constructor<?> blockPosition = getNMSClass("BlockPosition").getConstructor(int.class,int.class,int.class);
+            Object chestLoc = blockPosition.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+            Object blocks = getNMSClass("Blocks").getField("CHEST").get(null);
+
+            Constructor<?> playOutConstructor = getNMSClass("PacketPlayOutBlockAction").getConstructor(getNMSClass("BlockPosition"),getNMSClass("Block"),int.class,int.class);
+            Object packetOpen = playOutConstructor.newInstance(chestLoc,blocks, 1, 1);
+
+            for( Player player : Bukkit.getOnlinePlayers() )
+            {
+                Object handle = player.getClass().getMethod("getHandle").invoke( player );
+                Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+                playerConnection.getClass().getMethod("sendPacket",getNMSClass("Packet")).invoke(playerConnection,packetOpen);
+            }
+
+        } catch( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public Class< ? > getNMSClass( String name ) {
+        String version = Bukkit.getServer().getClass().getPackage().getName().split( "\\." )[ 3 ];
+        try {
+            return Class.forName( "net.minecraft.server." + version + "." + name );
+        } catch( ClassNotFoundException e ) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /* ProtocolLib requirement
+
     public void chestAnimation( Location loc ) {
         PacketContainer chest = new PacketContainer( PacketType.Play.Server.BLOCK_ACTION );
         chest.getBlocks().write( 0, Material.CHEST );
         chest.getBlockPositionModifier().write( 0, new BlockPosition( loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() ) );
         chest.getIntegers().write( 0, 1 );
-        chest.getIntegers().write( 1, 1 ); //1 for open, 0 for close
+        chest.getIntegers().write( 1, 1 );
 
         ProtocolLibrary.getProtocolManager().broadcastServerPacket( chest );
-    }
+    }*/
 
     public void coneEffect( Location location, Particle particleEffect ) {
         new BukkitRunnable() {
@@ -154,7 +183,7 @@ public class Effects {
                     double n4 = 0.3 * ( 9.42477796076938 - this.t ) * Math.sin( this.t + n );
 
                     location.add( n2, n3, n4 );
-                    location.getWorld().spawnParticle( particleEffect, location, 3);
+                    location.getWorld().spawnParticle( particleEffect, location, 3 );
                     location.getWorld().spawnParticle( particleEffect, location.add( 0.0, 0.2, 0.0 ), 3 );
                     location.subtract( n2, n3 + 0.2, n4 );
                     if( this.t >= 12.566370614359172 ) {
@@ -181,7 +210,7 @@ public class Effects {
 
                 location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n, location.getY() + this.y, location.getZ() + n2 ), 1 );
                 location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n, location.getY() + this.y - 0.03, location.getZ() + n2 ), 1 );
-                location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y, location.getZ() + n4 ), 1);
+                location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y, location.getZ() + n4 ), 1 );
                 location.getWorld().spawnParticle( particleEffect, new Location( location.getWorld(), location.getX() + n3, location.getY() + this.y - 0.03, location.getZ() + n4 ), 1 );
 
                 this.y -= 0.2;

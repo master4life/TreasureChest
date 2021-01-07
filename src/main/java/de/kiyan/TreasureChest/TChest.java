@@ -255,9 +255,7 @@ public class TChest {
                         itemMeta.setLore( list );
                         itemStack.setItemMeta( itemMeta );
                         location1.getWorld().playSound( location1, Sound.BLOCK_CHEST_OPEN, 1.0F, 1.0F );
-                        if( Bukkit.getServer().getPluginManager().getPlugin( "ProtocolLib" ) != null ) {
-                            effect.chestAnimation( location1 );
-                        }
+                        effect.chestAnimation( location1 );
                         Item item = TChest.this.playerWhoActivated.getWorld().dropItem( clocUP, itemStack );
                         item.setVelocity( new Vector( 0.0D, 0.25D, 0.0D ) );
                         item.setPickupDelay( 4000 );
@@ -351,9 +349,13 @@ public class TChest {
                         TChest.this.Backup.remove( block );
                     }
                     if( location.distance( Utils.getBlockCenter( TChest.this.center.getBlock().getLocation() ) ) >= TChest.this.dist && TChest.this.Backup.containsKey( block ) ) {
+                        BlockData blockData = TChest.this.Backup.get( block );
                         block.getWorld().playEffect( location, Effect.STEP_SOUND, 1 );
-                        block.removeMetadata( "TChest", Main.getInstance() );
-                        block.setBlockData( TChest.this.Backup.get( block ) );
+                        Block target = block.getLocation().getBlock();
+                        if( target.getType() == Material.CHEST || target.getType() == Material.TRAPPED_CHEST )
+                            target.setType( Material.AIR );
+
+                        block.setBlockData( blockData );
 
                         TChest.this.Backup.remove( block );
                         for( Entity ent : Bukkit.getWorld( playerWhoActivated.getWorld().getName() ).getEntities() ) {

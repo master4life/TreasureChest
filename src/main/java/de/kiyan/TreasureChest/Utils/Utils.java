@@ -1,17 +1,9 @@
 package de.kiyan.TreasureChest.Utils;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.libs.org.apache.commons.codec.binary.Base64;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
-import java.lang.reflect.Field;
-import java.util.UUID;
 
 public class Utils {
     public static int RandInt( int paramInt1, int paramInt2 ) {
@@ -28,28 +20,6 @@ public class Utils {
         if( paramLocation != null )
             return new Location( paramLocation.getWorld(), paramLocation.getX() + 0.5D, paramLocation.getY(), paramLocation.getZ() + 0.5D );
         return paramLocation;
-    }
-    public static ItemStack getSkull( ItemStack skull, String url) {
-        if (url == null || url.isEmpty())
-            return skull;
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        GameProfile profile = new GameProfile( UUID.randomUUID(), null);
-        byte[] encodedData = Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
-        profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
-        Field profileField = null;
-        try {
-            profileField = skullMeta.getClass().getDeclaredField("profile");
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-        }
-        profileField.setAccessible(true);
-        try {
-            profileField.set(skullMeta, profile);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        skull.setItemMeta(skullMeta);
-        return skull;
     }
 
     public static float getLookAtYaw( Vector vector ) {

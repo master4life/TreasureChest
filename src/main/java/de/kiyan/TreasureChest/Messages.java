@@ -35,7 +35,10 @@ public enum Messages
     PLAYER_WRONG_WORLD( "§a{player} §cis not on world§e {world}§c!"),
     NEARBY_PLAYER( "§cThere is an player nearby!"),
     BLOCKS_HAVENT_SET( "§4You haven't setup blocks yet!§c You cant open treasure chest" ),
-    GIVE_AN_CHESTTYPE( "§cGive an tier type §f/tchest give <chestname> <player> <§4RED§f|§bBLUE§f|§eYELLOW§f|§5PURPLE§f|§aGREEN§f>");
+    GIVE_AN_CHESTTYPE( "§cGive an tier type §f/tchest give <chestname> <player> <§4RED§f|§bBLUE§f|§eYELLOW§f|§5PURPLE§f|§aGREEN§f>"),
+    GAVE_AN_CHESTTYPE( "§cYou just gave §f{target}§c an Treasure Chest type: §5{tier}§c!"),
+    PLAYER_GAVE_AN_CHESTTYPE( "§f{player}§c just gave you an Treasure Chest type: §5{tier}§c!"),
+    TCHEST_RESTORED( "§CYOUR AREA WAS RESTORED BACK" );
 
     String message;
     Messages( String message )

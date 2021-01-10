@@ -63,7 +63,7 @@ public class TChestCommand implements CommandExecutor {
                     }
 
                     String filename = "";
-                    for( String list : new Config().listFiles() )
+                    for( String list : new Config().listFiles( true ) )
                         if( args[ 1 ].equalsIgnoreCase( list ) )
                             filename = list;
 
@@ -119,7 +119,7 @@ public class TChestCommand implements CommandExecutor {
             } else if( args[ 0 ].equalsIgnoreCase( "give" ) ) {
                 if( args.length > 1 ) {
                     String filename = "";
-                    for( String list : new Config().listFiles() )
+                    for( String list : new Config().listFiles( true ) )
                         if( args[ 1 ].equalsIgnoreCase( list ) )
                             filename = list;
 
@@ -182,6 +182,11 @@ public class TChestCommand implements CommandExecutor {
                                         .build();
 
                                 target.getInventory().addItem( item );
+
+                                player.sendMessage( Messages.GAVE_AN_CHESTTYPE.getMessage( true ).replace( "{target}", target.getDisplayName() ).replace( "{tier}", args[ 3 ] ) );
+                                target.sendMessage( Messages.PLAYER_GAVE_AN_CHESTTYPE.getMessage( true ).replace( "{player}", player.getDisplayName() ).replace( "{tier}", args[ 3 ] ) );
+
+                                return true;
                             }
 
                         player.sendMessage( Messages.GIVE_AN_CHESTTYPE.getMessage( true ) );

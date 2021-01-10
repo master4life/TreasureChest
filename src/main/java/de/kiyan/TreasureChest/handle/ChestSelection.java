@@ -54,7 +54,7 @@ public class ChestSelection {
                 for( int y = bottomBlockY; y <= topBlockY; y++ )
                     blocks.add( world.getBlockAt( x, y, z ) );
 
-        if( blocks.size() > 100 ) {
+        if( blocks.size() > 500 ) {
             setFirstLocation( player, null );
             setSecondLocation( player, null );
 
@@ -138,7 +138,6 @@ public class ChestSelection {
         int minY = Math.min( loc1.getBlockY(), loc2.getBlockY() );
         int minZ = Math.min( loc1.getBlockZ(), loc2.getBlockZ() );
         int x1 = Math.max( loc1.getBlockX(), loc2.getBlockX() ) + 1;
-        //int y1 = Math.max(loc1.getBlockY(), loc2.getBlockY()) + 1;
         int z1 = Math.max( loc1.getBlockZ(), loc2.getBlockZ() ) + 1;
 
         return new Location( player.getWorld(), minX + ( x1 - minX ) / 2.0D, minY + 1, minZ + ( z1 - minZ ) / 2.0D );

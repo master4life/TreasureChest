@@ -42,6 +42,7 @@ public class Main extends JavaPlugin
         plg.registerEvents( new EventPlayerMove(), this );
         plg.registerEvents( new EventPickupItem(), this );
         plg.registerEvents( new EventBlockBreak(), this );
+        plg.registerEvents( new EventBlockPhysics(), this );
     }
 
     public static Main getInstance()

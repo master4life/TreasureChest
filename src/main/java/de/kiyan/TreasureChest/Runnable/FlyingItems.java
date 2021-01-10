@@ -15,7 +15,6 @@ public class FlyingItems extends BukkitRunnable
 {
     final private Location location;
     final private Location frontLocation;
-    final private double highest;
     final private String text;
     final private ItemStack itemstack;
     final private Item item;
@@ -31,7 +30,6 @@ public class FlyingItems extends BukkitRunnable
         this.frontLocation = front;
         this.itemstack = is;
         this.text = is.getItemMeta().getDisplayName();
-        this.highest = height;
         this.item = spawn();
         this.height = ( height * 10 );
         runTaskTimer( plugin, 1L, 2L );
@@ -64,6 +62,6 @@ public class FlyingItems extends BukkitRunnable
     }
 
     public double getHighest() {
-        return this.highest;
+        return this.height;
     }
 }

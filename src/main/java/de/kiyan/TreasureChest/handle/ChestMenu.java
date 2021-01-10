@@ -281,7 +281,7 @@ public class ChestMenu {
      */
     public Menu setupListMenu() {
         Menu menu = new MenuAPI().createMenu( Messages.TCHEST_LIST_FOLDER.getMessage( false ), 6 );
-        ArrayList< String > config = new Config().listFiles();
+        ArrayList< String > config = new Config().listFiles( true );
 
         for( int i = 1; i <= config.size(); i++ ) {
             int j = i - 1;

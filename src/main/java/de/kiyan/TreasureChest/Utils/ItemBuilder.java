@@ -2,12 +2,10 @@ package de.kiyan.TreasureChest.Utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;

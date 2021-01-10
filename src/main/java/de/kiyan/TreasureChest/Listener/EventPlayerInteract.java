@@ -32,8 +32,9 @@ public class EventPlayerInteract implements Listener {
         if( player.getItemInHand().getItemMeta() != null ) {
             ItemStack is = player.getItemInHand();
             if( is.getItemMeta().getDisplayName().contains( "§6§lTreasure Chest: §5§l" )  ) {
-                if( action == Action.RIGHT_CLICK_AIR)
+                if( action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
                 {
+                    event.setCancelled( true );
                     if( TChest.blockedPlayers == null || !TChest.blockedPlayers.containsKey( player ) ) {
                         for( Entity ent : player.getLocation().getWorld().getNearbyEntities( player.getLocation(), 5, 5, 5 ) ) {
                             if( ent instanceof Player ) {
@@ -61,12 +62,7 @@ public class EventPlayerInteract implements Listener {
                         player.sendMessage( Messages.ALREADY_RUNNING.getMessage() );
                         return;
                     }
-
-                } else if( action == Action.RIGHT_CLICK_BLOCK )
-                {
-                    event.setCancelled( true );
                 }
-
             }
         }
 

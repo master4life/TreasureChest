@@ -52,5 +52,4 @@ public class EventPlayerMove implements Listener {
         Vector vector = new Vector( X, Z, Y );
         player.setVelocity( vector.setY( 0.8 ) );
     }
-
 }

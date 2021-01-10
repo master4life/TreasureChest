@@ -1,14 +1,13 @@
 package de.kiyan.TreasureChest;
 
 import de.kiyan.TreasureChest.Utils.ItemStackUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
@@ -32,13 +31,83 @@ public class Config {
         File file = new File( getDir() );
         if( !file.exists() )
             file.mkdir();
+
+        File file2 = new File( getCrashedDir() );
+        if( !file2.exists() )
+            file2.mkdir();
+
+        if( getCrashedFiles() != null ) {
+            restorePlace( getCrashedFiles() );
+        }
     }
 
-    public Particle getParticle( String which )
-    {
+    public void restorePlace( HashMap< Location, BlockData > map ) {
+        for( Map.Entry< Location, BlockData > entry : map.entrySet() ) {
+            Location loc = entry.getKey();
+            BlockData blockData = entry.getValue();
+
+            loc.getBlock().setBlockData( blockData );
+        }
+
+        for( String files : listFiles( false ) )
+        {
+            File file = new File( getCrashedDir(), files + ".yml" );
+            if( file.exists() )
+                file.delete();
+        }
+        Bukkit.getConsoleSender().sendMessage( Messages.TCHEST_RESTORED.getMessage( true ) );
+    }
+
+    public HashMap< Location, BlockData > getCrashedFiles() {
+        ArrayList< String > list = listFiles( false ); // False, will fetch all crashed file names without (.yml)
+        if( list != null && list.size() > 0 ) {
+            for( String stringFile : list ) {
+                File file = new File( getCrashedDir(), stringFile + ".yml" );
+                YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
+
+                HashMap< Location, BlockData > blockMap = new HashMap<>();
+                for( String coord : yaml.getKeys( false ) ) {
+                    String[] split = coord.split( ";" );
+                    Location loc = new Location( Bukkit.getWorld( split[ 0 ] ), Double.parseDouble( split[ 1 ] ), Double.parseDouble( split[ 2 ] ), Double.parseDouble( split[ 3 ] ) );
+                    BlockData blockData = Bukkit.createBlockData( yaml.getString( coord ) );
+
+                    blockMap.put( loc, blockData );
+                }
+                return blockMap;
+            }
+        }
+
+        return null;
+    }
+
+    public void removeCashFile( Player player ) {
+        File file = new File( getCrashedDir(), player.getUniqueId() + ".yml" );
+        if( file.exists() ) file.delete();
+    }
+
+    public void setCrashFile( Player player, Block block, BlockState blockState ) {
+        File file = new File( getCrashedDir(), player.getUniqueId() + ".yml" );
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
+        Location loc = block.getLocation();
+
+        yaml.set( loc.getWorld().getName() + ";"
+                        + loc.getBlockX() + ";"
+                        + loc.getBlockY() + ";"
+                        + loc.getBlockZ(),
+                blockState.getBlockData().getAsString()
+        );
+        try {
+            yaml.save( file );
+        } catch( IOException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public Particle getParticle( String which ) {
         String particle = plugin.getConfig().getString( "Effect." + which );
         return Particle.valueOf( particle );
     }
+
     public String get( String name ) {
         return plugin.getConfig().getString( name );
     }
@@ -155,7 +224,7 @@ public class Config {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration( file );
 
         HashMap< String, BlockData > hashMap1 = new HashMap<>();
-        if(  yaml.getConfigurationSection( "Blocks" ) == null )
+        if( yaml.getConfigurationSection( "Blocks" ) == null )
             return null;
 
         for( String coord : yaml.getConfigurationSection( "Blocks" ).getKeys( false ) ) {
@@ -194,8 +263,8 @@ public class Config {
         return new File( getDir() + "/" + name + ".yml" ).exists();
     }
 
-    public ArrayList< String > listFiles() {
-        File folder = new File( getDir() );
+    public ArrayList< String > listFiles( Boolean TChestOrCrashed ) {
+        File folder = new File( TChestOrCrashed ? getDir() : getCrashedDir() );
         File[] listOfFiles = folder.listFiles();
         ArrayList< String > arrayList = new ArrayList<>();
 
@@ -245,6 +314,10 @@ public class Config {
         } catch( IOException e ) {
             e.printStackTrace();
         }
+    }
+
+    public String getCrashedDir() {
+        return plugin.getDataFolder() + "/Backup";
     }
 
     public String getDir() {

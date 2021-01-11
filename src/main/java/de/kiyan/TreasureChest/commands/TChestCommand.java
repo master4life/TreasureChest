@@ -1,12 +1,9 @@
 package de.kiyan.TreasureChest.commands;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import de.kiyan.TreasureChest.Config;
 import de.kiyan.TreasureChest.Messages;
 import de.kiyan.TreasureChest.TChest;
 import de.kiyan.TreasureChest.Utils.ItemBuilder;
-import de.kiyan.TreasureChest.Utils.Utils;
 import de.kiyan.TreasureChest.handle.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -20,9 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-
-import static jdk.nashorn.internal.parser.TokenType.CASE;
-import static jdk.nashorn.internal.parser.TokenType.DEFAULT;
 
 public class TChestCommand implements CommandExecutor {
 

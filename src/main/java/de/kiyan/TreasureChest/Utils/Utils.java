@@ -4,24 +4,31 @@ import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
-
 public class Utils {
-    public static int RandInt( int paramInt1, int paramInt2 ) {
-        return paramInt1 + ( int ) ( Math.random() * ( paramInt2 - paramInt1 + 1 ) );
+    public static int RandInt( int from, int to ) {
+        return from + ( int ) ( Math.random() * ( to - from + 1 ) );
     }
 
-    public static Location getBlockCenterUP( Location paramLocation ) {
-        if( paramLocation != null )
-            return new Location( paramLocation.getWorld(), paramLocation.getX() + 0.5D, paramLocation.getY() + 1.0D, paramLocation.getZ() + 0.5D );
-        return paramLocation;
+    public static Location getBlockCenterUP( Location location ) {
+        if( location != null )
+            return new Location( location.getWorld(), location.getX() + 0.5D, location.getY() + 1.0D, location.getZ() + 0.5D );
+        return location;
     }
 
-    public static Location getBlockCenter( Location paramLocation ) {
-        if( paramLocation != null )
-            return new Location( paramLocation.getWorld(), paramLocation.getX() + 0.5D, paramLocation.getY(), paramLocation.getZ() + 0.5D );
-        return paramLocation;
+    public static Location getBlockCenter( Location location ) {
+        if( location != null )
+            return new Location( location.getWorld(), location.getX() + 0.5D, location.getY(), location.getZ() + 0.5D );
+        return location;
     }
 
+    public static float normalAngle( float fl ) {
+        for( ; fl <= -180.0F; fl += 360.0F ) ;
+        for( ; fl > 180.0F; fl -= 360.0F ) ;
+        return fl;
+    }
+
+    // Not necessary anymore, but good to have.
+    // Previous methods to adjusting  blocks their facing towards the player
     public static float getLookAtYaw( Vector vector ) {
         double d1 = vector.getX();
         double d2 = vector.getZ();
@@ -39,16 +46,10 @@ public class Utils {
         return ( float ) ( -d3 * 180.0D / Math.PI - 90.0D );
     }
 
-    public static float normalAngle( float fl ) {
-        for( ; fl <= -180.0F; fl += 360.0F ) ;
-        for( ; fl > 180.0F; fl -= 360.0F ) ;
-        return fl;
-    }
-
-    public static BlockFace yawToFace( float fl, boolean paramBoolean ) {
+    public static BlockFace yawToFace( float fl, boolean bool ) {
         fl -= 90.0F;
         fl = normalAngle( fl );
-        if( paramBoolean ) {
+        if( bool ) {
             switch( ( int ) fl ) {
                 case 0:
                     return BlockFace.NORTH;

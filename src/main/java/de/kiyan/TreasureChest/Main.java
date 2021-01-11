@@ -1,16 +1,9 @@
 package de.kiyan.TreasureChest;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
 import de.kiyan.TreasureChest.Listener.*;
 import de.kiyan.TreasureChest.api.MenuAPI;
 import de.kiyan.TreasureChest.commands.TChestCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,7 +14,7 @@ public class Main extends JavaPlugin
             -You can't store entchantment books. or potions (but enchanted items works)
             -You can get the GUIDE item out of the 'Dropping Items' menu
             -Adding way too many chests could possibly cause a problematic on opening scene
-            -Saving new items, resets all tier setup
+            -Saving new items causes previously added items to reset their tier setup
      */
 
     private static Main instance;

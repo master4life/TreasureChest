@@ -270,8 +270,6 @@ public class ChestMenu {
 
         return menu;
     }
-
-
     /*
 
 

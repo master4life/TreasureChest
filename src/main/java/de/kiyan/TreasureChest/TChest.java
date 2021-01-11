@@ -257,14 +257,17 @@ public class TChest {
                             this.line = ( "§a§l" + itemStack.getAmount() + " " + itemMeta.toString() ).replace( "_", " " );
 
                         for( String str1 : list ) {
-                            if( str1.contains( "common" ) ) {
-                                new BukkitRunnable() {
-
-                                    public void run() {
-                                        effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§f§lCOMMON", item.getItemStack().getAmount() + "x " + "§f§l" + item.getName().replace( "§f", "§f§l" ) );
-                                        cancel();
-                                    }
-                                }.runTaskTimer( Main.getInstance(), 0L, 15L );
+                            if( str1.contains( "common" ) )
+                            {
+                                Bukkit.getScheduler().runTaskLater( Main.getInstance(), () -> {
+                                    for( Entity enitity : TChest.this.playerWhoActivated.getNearbyEntities( 10, 10, 10 ))
+                                        if( enitity instanceof Player )
+                                            ((Player) enitity).sendMessage( Messages.ANNOUNCEMENT.getMessage( false )
+                                                    .replace( "{player}", TChest.this.playerWhoActivated.getName().toUpperCase( Locale.ROOT ) )
+                                                    .replace( "{tier}", "§f§lCOMMON" )
+                                                    .replace( "{item}", "§f" + item.getName().toUpperCase( Locale.ROOT ) ) );
+                                    effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§f§lCOMMON", item.getItemStack().getAmount() + "x " + "§f§l" + item.getName().replace( "§f", "§f§l" ) );
+                                }, 15L );
                                 continue;
                             }
                             if( str1.contains( "rare" ) ) {
@@ -273,11 +276,16 @@ public class TChest {
 
                                     public void run() {
                                         if( i == 0 )
+                                        {
                                             effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§4§lRARE", item.getItemStack().getAmount() + "x " + "§4§l" + item.getName().replace( "§f", "§4§l" ) );
+                                            Bukkit.broadcastMessage( Messages.ANNOUNCEMENT.getMessage( false )
+                                                    .replace( "{player}", TChest.this.playerWhoActivated.getName().toUpperCase( Locale.ROOT ) )
+                                                    .replace( "{tier}", "§4§lRARE" )
+                                                    .replace( "{item}", "§4" + item.getName().toUpperCase( Locale.ROOT ) ) );
+                                        }
 
                                         effect.spawn( clocUP, config.getParticle( "rare" ) == null ? Particle.CRIT : config.getParticle( "rare" ), 0.3f, 0.3f, 0.3f, 0.3f, 30.0d );
                                         i++;
-
                                         if( i == 2 )
                                             cancel();
                                     }
@@ -291,7 +299,13 @@ public class TChest {
 
                                     public void run() {
                                         if( i == 0 )
+                                        {
                                             effect.createHologram( TChest.this.playerWhoActivated, clocUP, "§e§lLEGENDARY", item.getItemStack().getAmount() + "x " + "§4§l" + item.getName().replace( "§f", "§4§l" ) );
+                                            Bukkit.broadcastMessage( Messages.ANNOUNCEMENT.getMessage( false )
+                                                    .replace( "{player}", TChest.this.playerWhoActivated.getName().toUpperCase( Locale.ROOT ) )
+                                                    .replace( "{tier}", "§e§lLEGENDARY" )
+                                                    .replace( "{item}", "§e" + item.getName().toUpperCase( Locale.ROOT ) ) );
+                                        }
                                         effect.spawn( clocUP, config.getParticle( "legendary" ) == null ? Particle.FLAME : config.getParticle( "legendary" ), 0.3f, 0.3f, 0.3f, 0.3f, 30.0d );
                                         i++;
                                         if( i == 2 )

@@ -1,7 +1,6 @@
 package de.kiyan.TreasureChest.Runnable;
 
 import de.kiyan.TreasureChest.Utils.Effects;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Item;

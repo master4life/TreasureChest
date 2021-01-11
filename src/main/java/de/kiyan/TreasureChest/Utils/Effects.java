@@ -46,7 +46,7 @@ public class Effects {
         }.runTaskTimer( Main.getInstance(), 1L, 1L );
     }
 
-    public void chestAnimation( Location location ) {
+    public void chestAnimation( Location location ) { // Chest opening animation upon the event of grand opening.
         try {
             Constructor<?> blockPosition = getNMSClass("BlockPosition").getConstructor(int.class,int.class,int.class);
             Object chestLoc = blockPosition.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());

@@ -38,7 +38,8 @@ public enum Messages
     GIVE_AN_CHESTTYPE( "§cGive an tier type §f/tchest give <chestname> <player> <§4RED§f|§bBLUE§f|§eYELLOW§f|§5PURPLE§f|§aGREEN§f>"),
     GAVE_AN_CHESTTYPE( "§cYou just gave §f{target}§c an Treasure Chest type: §5{tier}§c!"),
     PLAYER_GAVE_AN_CHESTTYPE( "§f{player}§c just gave you an Treasure Chest type: §5{tier}§c!"),
-    TCHEST_RESTORED( "§CYOUR AREA WAS RESTORED BACK" );
+    TCHEST_RESTORED( "§CYOUR AREA WAS RESTORED BACK" ),
+    ANNOUNCEMENT( "      §4§lCONGRATIULATION! §f{player} §cGOT A {tier} §cITEM DROP {item} §cFROM OPENING HIS TREASURE CHEST");
 
     String message;
     Messages( String message )

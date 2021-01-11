@@ -1,14 +1,10 @@
 package de.kiyan.TreasureChest.Listener;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import de.kiyan.TreasureChest.Config;
 import de.kiyan.TreasureChest.Main;
 import de.kiyan.TreasureChest.Messages;
 import de.kiyan.TreasureChest.Runnable.FlyingItems;
 import de.kiyan.TreasureChest.TChest;
-import de.kiyan.TreasureChest.Utils.Effects;
 import de.kiyan.TreasureChest.handle.ChestSelection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

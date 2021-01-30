@@ -31,14 +31,6 @@ public class Config {
         File file = new File( getDir() );
         if( !file.exists() )
             file.mkdir();
-
-        File file2 = new File( getCrashedDir() );
-        if( !file2.exists() )
-            file2.mkdir();
-
-        if( getCrashedFiles() != null ) {
-            restorePlace( getCrashedFiles() );
-        }
     }
 
     public void restorePlace( HashMap< Location, BlockData > map ) {

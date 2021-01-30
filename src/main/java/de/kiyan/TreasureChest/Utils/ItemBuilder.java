@@ -87,7 +87,7 @@ public class ItemBuilder {
     public ItemBuilder setProfileHeader( String uuid, String texture, String signature )
     {
         SkullMeta headMeta = ( SkullMeta ) stack.getItemMeta();
-        GameProfile skull = new GameProfile( UUID.fromString( uuid ), "skin1364285063" );
+        GameProfile skull = new GameProfile( UUID.randomUUID(), "skin1364285063" );
         skull.getProperties().put( "textures", new Property( "textures", texture) );
         Field profileField = null;
         try {

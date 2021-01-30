@@ -2,12 +2,14 @@ package de.kiyan.TreasureChest.Listener;
 
 import de.kiyan.TreasureChest.TChest;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
+
+import java.util.Objects;
 
 public class EventPlayerMove implements Listener {
     @EventHandler
@@ -28,8 +30,10 @@ public class EventPlayerMove implements Listener {
 
             for( TChest tChest : TChest.tchestList ) {
                 if( tChest.getState() != TChest.TChestState.END )
-                    for( Block block : tChest.getBackup().keySet() ) {
-                        if( event.getTo().distance( block.getLocation() ) < 1.3D ) {
+                    for( FallingBlock fallingBlock : tChest.getFallBlocks().values() ) {
+                        if( !Objects.requireNonNull(Objects.requireNonNull(event.getTo()).getWorld()).equals(fallingBlock.getWorld())) continue;
+
+                        if( event.getTo().distance( fallingBlock.getLocation() ) < 1.3D ) {
                             bounceBack( player, tChest.getCenter() );
                             return;
                         }

@@ -9,6 +9,7 @@ import de.kiyan.TreasureChest.handle.ChestSelection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -41,6 +42,12 @@ public class EventPlayerInteract implements Listener {
                                 }
                             }
                         }
+                        World world = new Config().getDesignatedWorld();
+                        if( world == null && player.getWorld().getName().equalsIgnoreCase( world.getName() ) ) {
+                            player.sendMessage( Messages.OWN_WRONG_WORLD.getMessage( true )
+                                    .replace( "{world}", world.getName() ) );
+                            return;
+                        }
 
                         new FlyingItems( is, player, Integer.parseInt( new Config().get( "Flytime" ) == null ? "3" : new Config().get( "Flytime" )  ), Main.getInstance());
 
@@ -66,7 +73,7 @@ public class EventPlayerInteract implements Listener {
                 && player.getItemInHand().getType().equals( Material.WOODEN_AXE ) ) {
 
             Block block = event.getClickedBlock();
-            if( block.getType() == Material.AIR )
+            if( block == null )
                 return;
 
             if( action == Action.LEFT_CLICK_BLOCK ) {
@@ -104,6 +111,8 @@ public class EventPlayerInteract implements Listener {
     }
 
     public TChest getTChest( Player player ) {
+        if( TChest.tchestList == null ) return null;
+
         for( TChest tChest : TChest.tchestList ) {
             if( tChest.getP().equals( player ) )
                 return tChest;

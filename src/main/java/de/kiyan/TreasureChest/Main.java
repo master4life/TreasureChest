@@ -4,11 +4,12 @@ import de.kiyan.TreasureChest.Listener.*;
 import de.kiyan.TreasureChest.api.MenuAPI;
 import de.kiyan.TreasureChest.commands.TChestCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin
-{
+public class Main extends JavaPlugin {
     /*
         KNOWN ISSUES:
             -You can't store entchantment books. or potions (but enchanted items works)
@@ -20,26 +21,43 @@ public class Main extends JavaPlugin
     private static Main instance;
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         instance = this;
-        Bukkit.getServer().getConsoleSender().sendMessage( Messages.PLUGIN_LOAD.getMessage( true ) );
-        this.getCommand( "TChest").setExecutor( new TChestCommand() );
+        Bukkit.getServer().getConsoleSender().sendMessage(Messages.PLUGIN_LOAD.getMessage(true));
+        this.getCommand("TChest").setExecutor(new TChestCommand());
+        this.getCommand("TChest").setTabCompleter(new TChestCommand());
 
         new Config().prepareConfig();
 
-        PluginManager plg = Bukkit.getPluginManager( );
+        PluginManager plg = Bukkit.getPluginManager();
 
-        plg.registerEvents( new MenuAPI( ), this );
-        plg.registerEvents( new EventPlayerInteract(), this );
-        plg.registerEvents( new EventPlayerMove(), this );
-        plg.registerEvents( new EventPickupItem(), this );
-        plg.registerEvents( new EventBlockBreak(), this );
-        plg.registerEvents( new EventBlockPhysics(), this );
+        plg.registerEvents(new MenuAPI(), this);
+        plg.registerEvents(new EventPlayerInteract(), this);
+        plg.registerEvents(new EventPlayerMove(), this);
+        plg.registerEvents(new EventPickupItem(), this);
+        plg.registerEvents(new EventFallingBlock(), this);
     }
 
-    public static Main getInstance()
-    {
+    @Override
+    public void onDisable() {
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity ent : Bukkit.getWorld(world.getName()).getEntities()) {
+                if (ent.hasMetadata("TChest")) {
+                    if (ent instanceof ArmorStand) {
+                        LivingEntity entity = (LivingEntity) ent;
+                        entity.setHealth(0.0D);
+                    }
+                    if (ent instanceof MagmaCube || ent instanceof Shulker) {
+                        LivingEntity entity = (LivingEntity) ent;
+                        entity.remove();
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static Main getInstance() {
         return instance;
     }
 }

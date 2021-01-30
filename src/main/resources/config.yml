@@ -20,6 +20,8 @@ Effect:
   # This is the effect type which appears by getting an legendary drop
   legendary: "FLAME"
   firstLegendary: "TOTEM"
+  # Win
+  openchest: "ASH"
 
 ######## Particle Effects ################
 # You can use those effects

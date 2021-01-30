@@ -258,6 +258,7 @@ public class TChest {
 
                         effect.chestAnimation(location1);
                         Item item = TChest.this.playerWhoActivated.getWorld().dropItem(clocUP.subtract(0, 0.5, 0), itemStack);
+                        item.setMetadata("TChest", new FixedMetadataValue(Main.getInstance(), "demo"));
                         item.setVelocity(new Vector(0.0D, 0.0D, 0.0D));
                         item.setPickupDelay(4000);
                         item.setGravity(false);

@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class EventPlayerInteract implements Listener {
     @EventHandler
@@ -49,7 +50,7 @@ public class EventPlayerInteract implements Listener {
                             return;
                         }
 
-                        new FlyingItems( is, player, Integer.parseInt( new Config().get( "Flytime" ) == null ? "3" : new Config().get( "Flytime" )  ), Main.getInstance());
+                        new FlyingItems( is.clone(), player, Integer.parseInt( new Config().get( "Flytime" ) == null ? "3" : new Config().get( "Flytime" )  ), Main.getInstance());
 
                         event.setCancelled( true );
                         new TChest( player, is.getItemMeta().getDisplayName().split( "§5§l" )[ 1 ] );

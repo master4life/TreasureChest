@@ -39,17 +39,26 @@ public class Main extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity ent : Bukkit.getWorld(world.getName()).getEntities()) {
+                if (ent.hasMetadata("TChest")) {
+                    if (ent instanceof ArmorStand || ent instanceof MagmaCube || ent instanceof Shulker || ent instanceof Item) {
+                        ent.remove();
+                    }
+                }
+            }
+        }
+
+    }
+
+    @Override
     public void onDisable() {
         for (World world : Bukkit.getWorlds()) {
             for (Entity ent : Bukkit.getWorld(world.getName()).getEntities()) {
                 if (ent.hasMetadata("TChest")) {
-                    if (ent instanceof ArmorStand) {
-                        LivingEntity entity = (LivingEntity) ent;
-                        entity.setHealth(0.0D);
-                    }
-                    if (ent instanceof MagmaCube || ent instanceof Shulker) {
-                        LivingEntity entity = (LivingEntity) ent;
-                        entity.remove();
+                    if (ent instanceof ArmorStand || ent instanceof MagmaCube || ent instanceof Shulker || ent instanceof Item) {
+                        ent.remove();
                     }
                 }
             }

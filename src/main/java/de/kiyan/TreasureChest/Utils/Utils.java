@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -40,6 +42,7 @@ public class Utils {
         box.setSilent(true);
         box.setCollidable(false);
         box.setInvulnerable(true);
+        box.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 9999, 255));
         box.setMetadata("TChest", new FixedMetadataValue(Main.getInstance(), tChest.getP().getName()));
         return fallingBlock;
     }
@@ -53,6 +56,7 @@ public class Utils {
         box.setCollidable(false);
         box.setInvulnerable(true);
         box.setGravity(false);
+        box.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 9999, 255));
         box.setMetadata("TChest", new FixedMetadataValue(Main.getInstance(), tChest.getP().getName()));
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Bukkit.getOnlinePlayers().forEach( (all) -> all.sendBlockChange(location, data) ), 2L);
     }

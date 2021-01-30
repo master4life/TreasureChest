@@ -28,6 +28,7 @@ public class FlyingItems extends BukkitRunnable
 
         this.frontLocation = front;
         this.itemstack = is;
+        itemstack.setAmount(1);
         this.text = is.getItemMeta().getDisplayName();
         this.item = spawn();
         this.height = ( height * 10 );
